@@ -105,15 +105,32 @@ MiniStar.prototype.update = function() { //this is to know how use use it as the
 
 }
 
+
+//FUNCTIONS TO DRAW THE MOUNTAINS
+
+function createMountainRange(mountainAmount){
+    
+
+
+}
+
+
+
+
+
+
+
+
 // Implementation
 //this is to create the background. the first two arguments are where the bacground
 //should start (x,y), the last two are about where it should end (x, y(canvas.height))
+//the first argument in add color stop is from 0(beggining) to 1(bottom of the page)
 
 
-const backgroundGradient = c.createLinearGradient(0,0,canvas.height)
+const backgroundGradient = c.createLinearGradient(0,0,0,canvas.height)
 
-backgroundGradient.addColorStop(0, '#171e26') //------------------------------------------------------------------------------------->>>>
 backgroundGradient.addColorStop(0, '#171e26') //
+backgroundGradient.addColorStop(1, '#3f586b') //
 
 
 
@@ -131,7 +148,10 @@ function init() {
 // Animation Loop
 function animate() {
     requestAnimationFrame(animate)
-    c.clearRect(0, 0, canvas.width, canvas.height)
+    //GRADIENT BACKGROUND
+    c.fillStyle = backgroundGradient
+    c.fillRect(0, 0, canvas.width, canvas.height) //we changed the clearRect by fill rect and at first it changed it
+    //to red because we didnt assign our const background gradient to be the fillStyle
 
     // c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y)
     stars.forEach((star, index) => {    //we added another parameter so we have to wrap them up

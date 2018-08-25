@@ -108,8 +108,21 @@ MiniStar.prototype.update = function() { //this is to know how use use it as the
 
 //FUNCTIONS TO DRAW THE MOUNTAINS
 
-function createMountainRange(mountainAmount){
-    
+function createMountainRange(mountainAmount, height, color){
+
+    for(let i =0 ; i < mountainAmount ; i++){
+        c.beginPath()                              
+        c.moveTo(0, canvas.height)                   //starting at bottom left corner
+        c.lineTo(canvas.width, canvas.height)       //to bottom right corner
+        c.lineTo(canvas.width/2, canvas.height - height) //to middle of canvas up to whatever the desired height is
+        //since 100 is 100 from the top down and we want it to be from the bottom up 
+        //we will have to take the canva's height and substract the desired height
+        c.lineTo(0, canvas.height)
+        c.fillStyle = color
+        c.fill()
+        c.closePath()
+
+    }
 
 
 }
@@ -152,6 +165,13 @@ function animate() {
     c.fillStyle = backgroundGradient
     c.fillRect(0, 0, canvas.width, canvas.height) //we changed the clearRect by fill rect and at first it changed it
     //to red because we didnt assign our const background gradient to be the fillStyle
+
+
+
+    //drawing mountains
+    createMountainRange(1, 300, 'white')
+
+
 
     // c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y)
     stars.forEach((star, index) => {    //we added another parameter so we have to wrap them up

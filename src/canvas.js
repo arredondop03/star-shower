@@ -111,13 +111,14 @@ MiniStar.prototype.update = function() { //this is to know how use use it as the
 function createMountainRange(mountainAmount, height, color){
 
     for(let i =0 ; i < mountainAmount ; i++){
+        const mountainWidth = canvas.width/mountainAmount
         c.beginPath()                              
-        c.moveTo(0, canvas.height)                   //starting at bottom left corner
-        c.lineTo(canvas.width, canvas.height)       //to bottom right corner
-        c.lineTo(canvas.width/2, canvas.height - height) //to middle of canvas up to whatever the desired height is
+        c.moveTo(i * mountainWidth, canvas.height )                   //starting at bottom left corner
+        c.lineTo(i * mountainWidth + mountainWidth + 200, canvas.height)       //to bottom right corner
+        c.lineTo(i * mountainWidth + mountainWidth/2, canvas.height - height) //to middle of canvas up to whatever the desired height is
         //since 100 is 100 from the top down and we want it to be from the bottom up 
         //we will have to take the canva's height and substract the desired height
-        c.lineTo(0, canvas.height)
+        c.lineTo(i * mountainWidth - 200, canvas.height)
         c.fillStyle = color
         c.fill()
         c.closePath()
@@ -149,13 +150,24 @@ backgroundGradient.addColorStop(1, '#3f586b') //
 
 let stars
 let miniStars
+let backgroundStars
 function init() {
     stars = [] //to create multiple stars
     miniStars = []
-
+    backgroundStars = [ ]
+    
     for (let i = 0; i < 1; i++) {
         stars.push(new Star(canvas.width/2, 30, 30, 'blue'));
     }
+
+    for (let i = 0; i < 150; i++) {
+        const x = Math.random() * canvas.width
+        const y = Math.random() * canvas.height
+        const radius = Math.random() *3
+
+        backgroundStars.push(new Star(x, y, radius, 'white'));
+    }
+
 }
 
 // Animation Loop
@@ -166,10 +178,18 @@ function animate() {
     c.fillRect(0, 0, canvas.width, canvas.height) //we changed the clearRect by fill rect and at first it changed it
     //to red because we didnt assign our const background gradient to be the fillStyle
 
+    //BACKGROUND STARS draw
+    backgroundStars.forEach((backgroundStar)=>{
+        backgroundStar.draw()
+
+    })
 
 
     //drawing mountains
-    createMountainRange(1, 300, 'white')
+    createMountainRange(1, canvas.height - 250, '#384551')
+    createMountainRange(2, canvas.height - 300, '#2B3843')
+    createMountainRange(3, canvas.height - 500, '#26333E')
+
 
 
 

@@ -127,19 +127,23 @@ function Star(x, y, radius, color) {
     this.radius = radius;
     this.color = color;
     this.velocity = {
-        x: 0,
-        y: 3
-    }, this.gravity = 1;
+        x: (Math.random() - 0.5) * 18,
+        y: 2
+    }, this.gravity = 0.3;
     this.friction = 0.8;
 }
 
 Star.prototype.draw = function () {
     //this is to know how the object looks like
+    c.save();
     c.beginPath();
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
     c.fillStyle = this.color;
+    c.shadowColor = '#E3EAEF'; //if we only want this shadow for the mini stars we write 
+    c.shadowBlur = 20; //c.save() at the beggining and c.restore() at the end
     c.fill();
     c.closePath();
+    c.restore();
 };
 
 Star.prototype.update = function () {
@@ -147,13 +151,14 @@ Star.prototype.update = function () {
     this.draw();
 
     //when ball hits bottom of the screen
-    if (this.y + this.radius + this.velocity.y > canvas.height) {
+    if (this.y + this.radius + this.velocity.y > _utils2.default.randomIntFromRange(canvas.height, canvas.height - groundHeight)) {
         this.velocity.y = -this.velocity.y * this.friction; //the 0.8 is to make the ball lose its velocity
         this.shatter();
     } else {
         this.velocity.y += this.gravity; //gravity
     }
-    this.y += this.velocity.y; //mode the ball down. (three) is balls velocity
+    this.x += this.velocity.x;
+    this.y += this.velocity.y; //move the ball down. (three) is balls velocity
 };
 
 Star.prototype.shatter = function () {
@@ -161,7 +166,6 @@ Star.prototype.shatter = function () {
     for (var i = 0; i < 8; i++) {
         miniStars.push(new MiniStar(this.x, this.y, 2));
     }
-    console.log(miniStars);
 };
 
 //Ministars
@@ -180,11 +184,15 @@ function MiniStar(x, y, radius, color) {
 
 MiniStar.prototype.draw = function () {
     //this is to know how the object looks like
+    c.save();
     c.beginPath();
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    c.fillStyle = 'rgba(255,0,0, ' + this.opacity + ')';
+    c.fillStyle = 'rgba(227,234,239, ' + this.opacity + ')';
+    c.shadowColor = '#E3EAEF'; //if we only want this shadow for the mini stars we write 
+    c.shadowBlur = 20; //c.save() at the beggining and c.restore() at the end
     c.fill();
     c.closePath();
+    c.restore();
 };
 
 MiniStar.prototype.update = function () {
@@ -237,16 +245,15 @@ backgroundGradient.addColorStop(1, '#3f586b'); //
 var stars = void 0;
 var miniStars = void 0;
 var backgroundStars = void 0;
+var ticker = 0;
+var randomSpawnRate = 75;
+var groundHeight = 50;
 function init() {
     stars = []; //to create multiple stars
     miniStars = [];
     backgroundStars = [];
 
-    for (var i = 0; i < 1; i++) {
-        stars.push(new Star(canvas.width / 2, 30, 30, 'blue'));
-    }
-
-    for (var _i = 0; _i < 150; _i++) {
+    for (var i = 0; i < 150; i++) {
         var x = Math.random() * canvas.width;
         var y = Math.random() * canvas.height;
         var radius = Math.random() * 3;
@@ -272,13 +279,15 @@ function animate() {
     createMountainRange(1, canvas.height - 250, '#384551');
     createMountainRange(2, canvas.height - 300, '#2B3843');
     createMountainRange(3, canvas.height - 500, '#26333E');
+    c.fillStyle = '#182028';
+    c.fillRect(0, canvas.height - groundHeight, canvas.width, groundHeight);
 
     // c.fillText('HTML CANVAS BOILERPLATE', mouse.x, mouse.y)
     stars.forEach(function (star, index) {
         //we added another parameter so we have to wrap them up
         //inside parenthesis
         star.update();
-        if (star.radius == 0) {
+        if (star.radius <= 0) {
             //Remove main star from array when radius is 0 
             stars.splice(index, 1);
         }
@@ -291,6 +300,13 @@ function animate() {
             miniStars.splice(index, 1);
         }
     });
+
+    ticker++;
+    if (ticker % randomSpawnRate === 0) {
+        var x = Math.random() * canvas.width;
+        stars.push(new Star(x, -100, 12, 'white'));
+        randomSpawnRate = _utils2.default.randomIntFromRange(75, 200);
+    }
 }
 
 init();
